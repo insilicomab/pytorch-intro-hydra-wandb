@@ -14,9 +14,8 @@ import hydra
 from omegaconf import DictConfig
 
 from src import (
-    colab_save_model, set_device, seed_torch,
-    DataTransform, CifarDataset, make_dataloader,
-    EarlyStopping, train_model, plot_acc_loss
+    set_device, seed_torch, DataTransform, CifarDataset, 
+    make_dataloader, EarlyStopping, train_model, plot_acc_loss
 )
 
 
