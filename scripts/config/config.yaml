@@ -59,5 +59,5 @@ main:
     min_lr: 1e-5
     verbose: True
   train:
-    epochs: 5
+    epochs: 50
     model_name: 'convnext_base'
