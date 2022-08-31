@@ -1,0 +1,112 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+
+import torch
+from torch import nn, optim
+
+import timm
+
+import os
+import hydra
+from omegaconf import DictConfig
+
+from src import (
+    colab_save_model, set_device, seed_torch,
+    DataTransform, CifarDataset, make_dataloader,
+    EarlyStopping, train_model, plot_acc_loss
+)
+
+
+@hydra.main(version_base=None, config_path='config', config_name='config')
+def main(cfg: DictConfig):
+
+    # gpu or cpu
+    device = set_device()
+
+    # set up experiment
+    seed_torch()
+
+    # directory to save models
+    SAVE_MODEL_PATH = cfg.main.save_model_path
+    os.makedirs(SAVE_MODEL_PATH, exist_ok=True)
+
+    # read label data
+    train_master = pd.read_csv(cfg.main.train_master, sep='\t')
+    train_num_classes = train_master['label_id'].nunique()
+    assert (
+        cfg.main.model.num_classes == train_num_classes
+    ), f'num_classes should be {train_num_classes}'
+
+    # image name list
+    image_name_list = train_master['file_name'].values
+
+    # label list
+    label_list = train_master['label_id'].values
+
+    # split train & val
+    x_train, x_val, y_train, y_val = train_test_split(
+        image_name_list,
+        label_list,
+        test_size=cfg.main.split.test_size,
+        stratify=label_list,
+        random_state=cfg.main.split.random_state
+    )
+
+    # dataset
+    train_dataset = CifarDataset(x_train, y_train, cfg.main.dataset.tr_img_path, transform=DataTransform(), phase='train')
+    val_dataset = CifarDataset(x_val, y_val, cfg.main.dataset.tr_img_path, transform=DataTransform(), phase='val')
+
+    # dataloader
+    dataloader = make_dataloader(
+        tr_dataset=train_dataset,
+        val_dataset=val_dataset, 
+        tr_batch_size=cfg.main.dataloader.tr_batch_size,
+        val_batch_size=cfg.main.dataloader.val_batch_size
+    )
+
+    # define model
+    model = timm.create_model(
+        cfg.main.model.name,
+        pretrained=cfg.main.model.pretrained,
+        num_classes=cfg.main.model.num_classes
+    )
+    model.to(device)
+
+    # loss function, optimizer
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=cfg.main.optimizer.lr, weight_decay=cfg.main.optimizer.weight_decay)
+
+    # earlystopping and reduce lr schedular
+    ers = EarlyStopping(patience=cfg.main.earlystopping.patience, verbose=cfg.main.earlystopping.verbose)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode=cfg.main.schedular.mode,
+        factor=cfg.main.schedular.factor,
+        patience=cfg.main.schedular.patience,
+        min_lr=cfg.main.schedular.min_lr,
+        verbose=cfg.main.schedular.verbose
+    )
+
+    # training
+    history = train_model(
+        model=model,
+        epochs=cfg.main.train.epochs,
+        dataloader=dataloader,
+        device=device,
+        loss_fn=criterion,
+        optimizer=optimizer,
+        scheduler=scheduler,
+        earlystopping=ers,
+        save_model_path=SAVE_MODEL_PATH,
+        model_name=cfg.main.train.model_name
+    )
+
+    # make plots
+    plot_acc_loss(history)
+
+
+if __name__ == '__main__':
+    main()

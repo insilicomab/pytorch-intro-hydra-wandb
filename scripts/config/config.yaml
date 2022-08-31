@@ -1,0 +1,63 @@
+# Hydra Settings
+defaults: 
+  - _self_ 
+  - override hydra/hydra_logging: disabled 
+  - override hydra/job_logging: disabled
+ 
+hydra:
+  run:
+    dir: ./
+  output_subdir: null
+  sweep:
+    dir: .
+    subdir: .
+
+
+# User setting
+img_dir: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_images'
+df_dir: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_master.tsv'
+model_name: ${main.model.name}
+num_classes: 10
+
+
+# wandb
+wandb:
+  project: pytorch-intro-hydra-wandb
+  run_name: ''
+  tags: []
+  notes: ''
+  data_dir: ${img_dir}
+  model_name: ${main.model.name}
+  
+
+# main.py
+main:
+  save_model_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/model/'
+  train_master: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_master.tsv'
+  split:
+    test_size: 0.25
+    random_state: 42
+  dataset:
+    tr_img_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_images'
+  dataloader:
+    tr_batch_size: 64
+    val_batch_size: 64
+  model:
+    name: 'convnext_base'
+    pretrained: True
+    num_classes: ${num_classes}
+  optimizer:
+    lr: 1e-3
+    weight_decay: 0.0001
+  earlystopping:
+    patience: 20
+    verbose: 1 # True (1), False (0)
+  schedular:
+    mode: 'max'
+    factor: 0.5
+    patience: 5
+    min_lr: 1e-5
+    verbose: True
+  train:
+    epochs: 5
+    model_name: 'convnext_base'
