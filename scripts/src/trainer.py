@@ -89,7 +89,7 @@ def train_model(model, epochs, dataloader, device, loss_fn, optimizer, scheduler
                 # best score update
                 best_loss = epoch_loss
 
-                param_name = f'{save_model_path}{model_name}_loss_{best_loss:.4f}.pth'
+                param_name = f'{save_model_path}{model_name}.pth'
 
                 torch.save(model.state_dict(), param_name)
         
@@ -178,12 +178,10 @@ def train_model_wb(model, epochs, dataloader, device, loss_fn, optimizer, schedu
                 # best score update
                 best_loss = epoch_loss
 
-                param_name = f'{save_model_path}{model_name}_loss_{best_loss:.4f}.pth'
+                param_name = f'{save_model_path}{model_name}.pth'
 
                 torch.save(model.state_dict(), param_name)
-                wandb.save(f'{model_name}.ckpt')
-                wandb.save(f'{model_name}.pth')
-                wandb.save(f'{model_name}.h5')
+                torch.save(model.state_dict(), os.path.join(wandb.run.dir, f'{model_name}.pth'))
         
         scheduler.step(epoch_loss)
 
