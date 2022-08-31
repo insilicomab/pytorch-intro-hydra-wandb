@@ -16,9 +16,8 @@ from omegaconf import DictConfig
 import wandb
 
 from src import (
-    colab_save_model, set_device, seed_torch,
-    DataTransform, CifarDataset, make_dataloader,
-    EarlyStopping, train_model_wb
+    set_device, seed_torch, DataTransform, CifarDataset,
+    make_dataloader, EarlyStopping, train_model_wb,
 )
 
 
