@@ -16,7 +16,7 @@ hydra:
 # User setting
 img_dir: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_images'
 df_dir: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_master.tsv'
-model_name: ${main.model.name}
+model_name: ${model.name}
 num_classes: 10
 
 
@@ -27,37 +27,42 @@ wandb:
   tags: []
   notes: ''
   data_dir: ${img_dir}
-  model_name: ${main.model.name}
+  model_name: ${model.name}
   
 
-# main.py
-main:
-  save_model_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/model/'
-  train_master: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_master.tsv'
-  split:
-    test_size: 0.25
-    random_state: 42
-  dataset:
-    tr_img_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_images'
-  dataloader:
-    tr_batch_size: 64
-    val_batch_size: 64
-  model:
-    name: 'convnext_base'
-    pretrained: True
-    num_classes: ${num_classes}
-  optimizer:
-    lr: 1e-3
-    weight_decay: 0.0001
-  earlystopping:
-    patience: 20
-    verbose: 1 # True (1), False (0)
-  schedular:
-    mode: 'max'
-    factor: 0.5
-    patience: 5
-    min_lr: 1e-5
-    verbose: True
-  train:
-    epochs: 50
-    model_name: 'convnext_base'
+# train.py
+save_model_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/model/'
+train_master: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_master.tsv'
+split:
+  test_size: 0.25
+  random_state: 42
+dataset:
+  tr_img_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_images'
+  test_img_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/test_images'
+dataloader:
+  tr_batch_size: 64
+  val_batch_size: 64
+  test_batcu_size: 1
+model:
+  name: 'convnext_base'
+  pretrained: True
+  num_classes: ${num_classes}
+optimizer:
+  lr: 1e-3
+  weight_decay: 0.0001
+earlystopping:
+  patience: 20
+  verbose: 1 # True (1), False (0)
+schedular:
+  mode: 'max'
+  factor: 0.5
+  patience: 5
+  min_lr: 1e-5
+  verbose: True
+train:
+  epochs: 50
+  model_name: 'convnext_base'
+
+
+# inference.py
+test_master: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/sample_submit.tsv'
