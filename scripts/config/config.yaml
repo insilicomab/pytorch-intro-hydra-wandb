@@ -17,6 +17,7 @@ hydra:
 img_dir: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_images'
 df_dir: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_master.tsv'
 model_name: ${model.name}
+load_model: 'convnext_base.pth'
 num_classes: 10
 
 
@@ -65,4 +66,7 @@ train:
 
 
 # inference.py
+wandb_run_path: 'insilicomab/pytorch-intro-hydra-wandb/2kyx2ry8'
 test_master: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/sample_submit.tsv'
+submit_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/submit/'
+submit_name: 'sample_submission.tsv'
