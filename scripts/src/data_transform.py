@@ -1,24 +1,39 @@
 from torchvision import transforms
+from omegaconf import DictConfig
 
 
 class DataTransform():
 
-    def __init__(self):
+    def __init__(self, cfg: DictConfig):
         
         self.data_transform = {
             'train': transforms.Compose([
-                transforms.Resize(96),
-                transforms.RandomHorizontalFlip(p=0.2),
-                transforms.RandomRotation(degrees=20),
-                transforms.RandomAffine(degrees=[-10, 10], translate=(0.1, 0.1), scale=(0.5, 1.5)),
-                transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5),
+                transforms.Resize(cfg.transform.image_size),
+                transforms.RandomHorizontalFlip(p=cfg.transform.randomhorizontalflip.p),
+                transforms.RandomRotation(degrees=cfg.transform.randomrotation.degrees),
+                transforms.RandomAffine(
+                    degrees=cfg.transform.randomaffine.degrees,
+                    translate=cfg.transform.randomaffine.translate,
+                    scale=cfg.transform.randomaffine.scale
+                    ),
+                transforms.ColorJitter(
+                    brightness=cfg.transform.colorjitter.brightness,
+                    contrast=cfg.transform.colorjitter.contrast,
+                    saturation=cfg.transform.colorjitter.saturation
+                    ),
                 transforms.ToTensor(),
-                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+                transforms.Normalize(
+                    cfg.transform.normalize.mean,
+                    cfg.transform.normalize.std
+                    ),
                 ]),
             'val': transforms.Compose([
-                transforms.Resize(96),
+                transforms.Resize(cfg.transform.image_size),
                 transforms.ToTensor(),
-                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+                transforms.Normalize(
+                    cfg.transform.normalize.mean,
+                    cfg.transform.normalize.std
+                    ),
                 ]),
         }
     
