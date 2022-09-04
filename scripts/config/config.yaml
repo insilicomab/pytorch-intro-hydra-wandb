@@ -37,6 +37,23 @@ train_master: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_master
 split:
   test_size: 0.25
   random_state: 42
+transform:
+  image_size: 96
+  randomhorizontalflip:
+    p: 0.2
+  randomrotation:
+    degrees: 20
+  randomaffine:
+    degrees: [-10, 10]
+    translate: [0.1, 0.1]
+    scale: [0.5, 1.5]
+  colorjitter:
+    brightness: 0.5
+    contrast: 0.5
+    saturation: 0.5
+  normalize: 
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
 dataset:
   tr_img_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/train_images'
   test_img_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/test_images'
@@ -66,7 +83,7 @@ train:
 
 
 # inference.py
-wandb_run_path: 'insilicomab/pytorch-intro-hydra-wandb/2kyx2ry8'
+wandb_run_path: 'insilicomab/pytorch-intro-hydra-wandb/1lp10jnj'
 test_master: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/sample_submit.tsv'
 submit_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/submit/'
 submit_name: 'sample_submission.tsv'
