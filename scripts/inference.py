@@ -54,7 +54,7 @@ def main(cfg: DictConfig):
     dummy = test[0].values
 
     # dataset
-    test_dataset = CifarDataset(x_test, dummy, cfg.dataset.test_img_path, transform=DataTransform(), phase='val')
+    test_dataset = CifarDataset(x_test, dummy, cfg.dataset.test_img_path, transform=DataTransform(cfg), phase='val')
 
     # dataloader
     test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
