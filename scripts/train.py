@@ -70,8 +70,8 @@ def main(cfg: DictConfig):
     )
 
     # dataset
-    train_dataset = CifarDataset(x_train, y_train, cfg.dataset.tr_img_path, transform=DataTransform(), phase='train')
-    val_dataset = CifarDataset(x_val, y_val, cfg.dataset.tr_img_path, transform=DataTransform(), phase='val')
+    train_dataset = CifarDataset(x_train, y_train, cfg.dataset.tr_img_path, transform=DataTransform(cfg), phase='train')
+    val_dataset = CifarDataset(x_val, y_val, cfg.dataset.tr_img_path, transform=DataTransform(cfg), phase='val')
 
     # dataloader
     dataloader = make_dataloader(
