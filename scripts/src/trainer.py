@@ -269,8 +269,7 @@ class TrainModel():
                 accuracy = corrects.double() / len(self.dataloader[phase].dataset)
                 accuracy = accuracy.to('cpu').detach().numpy().copy()
                 
-                history[f'{phase}_loss'].append(epoch_loss)
-                history[f'{phase}_accuracy'].append(accuracy)
+                wandb.log({f'{phase}_loss': epoch_loss, f'{phase}_accuracy': accuracy})
                 
                 print(f'{phase} Loss: {epoch_loss:.4f} Accuracy: {accuracy:.4f}')
                 
@@ -284,6 +283,7 @@ class TrainModel():
                     param_name = f'{save_model_path}{model_name}_loss_{best_loss:.4f}.pth'
 
                     torch.save(model.state_dict(), param_name)
+                    torch.save(model.state_dict(), os.path.join(wandb.run.dir, f'{model_name}.pth'))
             
             self.scheduler.step(epoch_loss)
 
