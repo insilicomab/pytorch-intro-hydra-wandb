@@ -10,6 +10,8 @@ from torch import nn, optim
 import timm
 
 import os
+import shutil
+
 import hydra
 from omegaconf import DictConfig
 
@@ -45,6 +47,9 @@ def main(cfg: DictConfig):
             'model': cfg.model_name,
         }
     )
+
+    # save hydra's config in wandb cloud storage
+    shutil.copy2('config/config.yaml', os.path.join(wandb.run.dir, 'hydra_config.yaml'))
 
 
     # read label data
