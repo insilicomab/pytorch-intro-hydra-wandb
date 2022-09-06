@@ -83,7 +83,7 @@ train:
 
 
 # inference.py
-wandb_run_path: 'insilicomab/pytorch-intro-hydra-wandb/1lp10jnj'
+wandb_run_path: 'insilicomab/pytorch-intro-hydra-wandb/3volctr1'
 test_master: '/content/drive/MyDrive/Colab Notebooks/cifar10/input/sample_submit.tsv'
 submit_path: '/content/drive/MyDrive/Colab Notebooks/cifar10/submit/'
 submit_name: 'sample_submission.tsv'
